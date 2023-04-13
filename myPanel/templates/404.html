@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backups</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'img/headicon.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="content pb-16">
+        <nav class="flex items-center flex-shrink-0 w-full h-16 px-10 bg-white bg-opacity-75">
+            <a href="main.html"></a><img src="{% static 'img/headicon.png' %}" alt="" class="w-8 h-8">
+            <input class="flex items-center h-10 px-4 ml-10 text-sm bg-gray-200 rounded-full focus:outline-none focus:ring" type="search" placeholder="Busca un servidor" ">
+            <div class="ml-10 ">
+                <a class="mx-2 text-sm font-semibold text-blue-700 " href="dashboard.html ">Dashboard</a>
+                <a class="mx-2 text-sm font-semibold text-gray-600 hover:text-blue-700 " href="# ">Sobre NextServer</a>
+            </div>
+            <button class="flex items-center justify-center w-8 h-8 ml-auto overflow-hidden rounded-full cursor-pointer ">
+                <img src="{% static 'img/github.png' %}" alt=" ">
+            </button>
+        </nav>
+        <section class="bg-gray-50 ">
+            <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
+                <div class="mx-auto max-w-screen-sm text-center ">
+                    <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 text-blue-700 ">404</h1>
+                    <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl ">Página no encontrada 😵</p>
+                    <p class="mb-4 text-lg font-light text-gray-500 ">Parece que aquí no hay nada, o eso parece...</p>
+                    <a href="# " class="inline-flex font-semibold text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg text-sm px-5 py-2.5 text-centermy-4 ">Volver a home</a>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="p-4 bg-gray-50 md:p-8 lg:p-10 fixed bottom-0 w-full ">
+        <div class="mx-auto max-w-screen-xl text-center ">
+            <a href="# " class="flex justify-center items-center text-2xl font-semibold text-gray-900 ">
+                myBackupPanel    
+            </a>
+            <p class="my-6 text-gray-500 ">Everyhost & Skidemy - Educación y futuro </p>
+            <ul class="flex flex-wrap justify-center items-center mb-6 text-gray-900 ">
+                <li>
+                    <a href="# " class="mr-4 hover:underline md:mr-6 ">Preguntas frecuentes</a>
+                </li>
+                <li>
+                    <a href="# " class="mr-4 hover:underline md:mr-6 ">Contacto</a>
+                </li>
+                <li>
+                    <a href="# " class="mr-4 hover:underline md:mr-6 ">Sobre nosotros</a>
+                </li>
+            </ul>
+            <span class="text-sm text-gray-500 sm:text-center ">© 2022-2023 <a href="# " class="hover:underline ">Everyhost & Skidemy ™</a>. All Rights Reserved.</span>
+        </div>
+      </footer>
+</body>
+
+</html>
