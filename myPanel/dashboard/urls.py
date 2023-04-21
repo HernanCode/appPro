@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('',views.showDashboard,name='showDashboard')
-
+    path('',views.serverCrud,name='showDashboard'),
+    path('deleteServer/<int:idServer>/', views.deleteServer, name='deleteServer')
+    
 ]
