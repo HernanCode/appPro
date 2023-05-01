@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 from .models import Server
 from .forms import serverForm
 import os 
+import asyncio
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required(login_url='login')
 def serverCrud(request):
     servers = Server.objects.all()
     if request.method == 'POST':
@@ -14,10 +17,11 @@ def serverCrud(request):
             ip = form.cleaned_data['ipServer']
             adminUser = form.cleaned_data['adminUser']
             adminPassword = form.cleaned_data['adminPassword']
-            os = form.cleaned_data['osServer']
-            dataServer = Server(name=name, ip=ip, os=os, adminUser=adminUser)
+            osServer = form.cleaned_data['osServer']
+            dataServer = Server(name=name, ip=ip, os=osServer, adminUser=adminUser)
             dataServer.save()
-            return redirect('showDashboard') 
+            addServer(ip,osServer,adminUser,adminPassword) 
+            return redirect('showDashboard')
     else:
         form = serverForm()
     
@@ -43,4 +47,24 @@ def serverStatus(ip):
         return True
     else:
         return False
-    
+
+import os
+def addServer(ip, oSystem, adminUser, adminPassword):
+    path = f"/home/{adminUser}/scripts"  
+    command = f"sshpass -p {adminPassword} ssh-copy-id -f {adminUser}@{ip}"
+    print(command)
+    mkdirScripts = f"ssh {adminUser}@{ip} mkdir {path}" 
+    sendFile = f"scp /home/samuel/appPro/myPanel/dashboard/localScript.py {adminUser}@{ip}:{path}"
+    os.system(command)
+    os.system(mkdirScripts)
+    os.system(sendFile)
+
+
+def infoServer(request, idServer):
+    server = Server.objects.get(id=idServer)
+    return render(request, 'serverPanel.html', {'server':server})
+
+
+def userLogout(request):
+    logout(request)
+    return redirect('../login')

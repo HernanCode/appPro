@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('',views.serverCrud,name='showDashboard'),
-    path('deleteServer/<int:idServer>/', views.deleteServer, name='deleteServer')
+    path('deleteServer/<int:idServer>/', views.deleteServer, name='deleteServer'),
+    path('infoServer/<int:idServer>/', views.infoServer, name='infoServer'),
+    path('logout', views.userLogout, name="logout"),
     
 ]

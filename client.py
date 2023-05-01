@@ -4,11 +4,9 @@ import time
 import pickle
 
 def getStats():    
-    cpuUsage = psutil.cpu_percent(50)
-    ramUsage = round(psutil.virtual_memory().used/1000000000,1)
+    cpuUsage = psutil.cpu_percent(5)
+    ramUsage = round(psutil.virtual_memory().percent)
     diskUsage = psutil.disk_usage('/')
-    print(ramUsage)
-    print(diskUsage)
     uptime = time.time() - psutil.boot_time()
     data = {
         "cpuUsage":cpuUsage,
@@ -24,9 +22,10 @@ def sendStats(host,port,stats):
         client.sendall(stats)
         print("Datos enviados al servidor.")
 
-host = '10.0.0.3'
+host = '10.0.0.1'
 port = 12345
 
-while True:
-    sendStats(host,port,getStats())
-    time.sleep(30) 
+sendStats(host,port,getStats())
+
+
+

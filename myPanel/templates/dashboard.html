@@ -1,9 +1,10 @@
-{% extends 'base/base-header.html' %}
+{% extends 'base/baselogin-header.html' %}
 {% load static %}
 
 {% block title %} Backup Center {% endblock title %}
 
 {% block content %} 
+
     <div class="container mx-auto px-4 ">
         <h1 class="text-4xl font-bold text-center my-8 ">Bienvenido de nuevo, Samuel! 👋</h1>
         <div class="flex flex-wrap justify-center ">
@@ -56,7 +57,7 @@
                         {% if servers %}
                         {% for server in servers%}
                         <tr class="border-b border-gray-300 text-gray-800 text-sm">
-                          <td class="py-2 px-3">{{server.name}}</td>
+                          <td class="py-2 px-3"><a href="{% url 'infoServer' server.id %}">{{server.name}}</a></td>
                           <td class="py-2 px-3">{{server.ip}}</td>
                           <td class="py-2 px-3">{{server.os}}</td>
                           {% if server.status %}
@@ -80,7 +81,8 @@
               
         </div>
     </div>
-    
+
+  
 {% endblock %}
     
     
