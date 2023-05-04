@@ -1,0 +1,17 @@
+====================================================================================================================
+Welcome to myServerPanel.
+
+
+In this same directory you will find 3 files:
+
+backupsClients.py: You must add to the "paths" array the path of the files you want to make backups and run it periodically.
+client.py: You will need to run this script periodically to send metrics to the server.
+
+
+Again, thank you very much for using myServerPanel.
+====================================================================================================================
+Contact:
+
+shernan@everyhost.com
+aaidarov@skidemy.com
+====================================================================================================================

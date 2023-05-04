@@ -8,22 +8,26 @@
 <div class="w-full lg:w-2/3 px-4 mb-8 content-center mx-auto">
     <div class="container mx-auto px-4 ">
         <h1 class="text-2xl font-bold mb-4 text-center">Servidor {{server.name}}🖥 </h1>
-        <p class="text-center">IP: {{server.ip}}</p>
+        <p class="text-center">IP: <span id = "ipText" >{{server.ip}}</span></p>
         <div class="bg-white shadow-lg rounded-lg p-6 overflow-auto ">
             <table class="mt-4 w-full border-collapse">
                 <thead>
                     <tr class="border-b border-gray-300 text-left text-gray-600 text-sm font-medium text-center">
+                        <th class="py-2 px-3 ">Nombre del backup</th>
                         <th class="py-2 px-3 ">Tipo de backup</th>
                         <th class="py-2 px-3 ">Peso</th>
                         <th class="py-2 px-3 ">Fecha</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
+                    {% for name, value in backups.items %}
                     <tr class="border-b border-gray-300 text-gray-800 text-center">
-                        <td class="py-2 px-3 ">Incremental</td>
-                        <td class="py-2 px-3 ">200MB</td>
-                        <td class="py-2 px-3 ">2022-07-12</td>
+                        <td class="py-2 px-3 ">{{name}}</td>
+                        <td class="py-2 px-3 ">{{value.type}}</td>
+                        <td class="py-2 px-3 ">{{value.size}}MB</td>
+                        <td class="py-2 px-3 ">{{value.date}}</td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -60,11 +64,12 @@
 <script src="{% static 'js/filter.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 <script>
+    const ipJS = document.getElementById("ipText").innerHTML;
 const cpuUsageCtx = document.getElementById('cpu-usage-graph').getContext('2d');
 const cpuUsageChart = new Chart(cpuUsageCtx, {
     type: 'line',
     data: {
-        labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+        labels: ['0', '0', '0', '0', '0', '0'],
         datasets: [{
             label: 'CPU Usage',
             data: [],
@@ -92,7 +97,7 @@ const memoryUsageCtx = document.getElementById('memory-usage-graph').getContext(
 const memoryUsageChart = new Chart(memoryUsageCtx, {
     type: 'line',
     data: {
-        labels: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+        labels: ['0', '0', '0', '0', '0', '0'],
         datasets: [{
             label: 'Memory Usage',
             data: [],
@@ -149,26 +154,10 @@ const storagePieChart = new Chart(storagePieCtx, {
     }
 });
 
-function secondsToString(seconds) {
-    var numdays = Math.floor((seconds % 31536000) / 86400);
-    var numhours = Math.floor(((seconds % 31536000) % 86400) / 3600);
-    var numminutes = Math.floor((((seconds % 31536000) % 86400) % 3600) / 60) + " minutes ";
-    if (numdays == 0) {
-        numdays = "";
-    } else {
-        numdays = numdays + " days "
-    }
-    if (numhours == 0) {
-        numhours = "";
-    } else {
-        numhours = numhours + " hours "
-    }
-    return numdays + numhours + numminutes;
-
-}
-
+ 
 async function fetchData() {
-    const response = await fetch("{% static 'json/default.json'%}");
+    
+    const response = await fetch("{% static 'json/json-' %}" + ipJS + ".json");
     const data = await response.json();
     return data;
 }
@@ -183,13 +172,23 @@ setInterval(async function() {
     document.getElementById("memoryUsageText").innerHTML = file.memoryUsage.data[file.memoryUsage.data.length - 1] + "%";
     memoryUsageChart.update();
 
-    storagePieChart.data.datasets[0].data[0] = file.storage.diskTotal;
+    storagePieChart.data.datasets[0].data[0] = file.storage.diskTotal - file.storage.diskUsed;
     storagePieChart.data.datasets[0].data[1] = file.storage.diskUsed;
     document.getElementById("freeDiskText").innerHTML = Math.round((file.storage.diskTotal - file.storage.diskUsed) * 10) / 10 + "GB";
     document.getElementById("usedDiskText").innerHTML = file.storage.diskUsed + "GB";
     storagePieChart.update();
 
-    document.getElementById("server-uptime-value").innerHTML = secondsToString(Math.round(file.serverUptime.current));
+    const currentTime = new Date();
+    const labels = [];
+    for (let i = 5; i >= 0; i--) {
+        const time = new Date(currentTime.getTime() - i * 60 * 1000);
+        const label = `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`;
+        labels.push(label);
+    }
+    memoryUsageChart.data.labels = labels;
+    cpuUsageChart.data.labels = labels;
+    memoryUsageChart.update();
+
 }, 1000);
 
 
