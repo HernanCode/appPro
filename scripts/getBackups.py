@@ -1,3 +1,4 @@
+#File that will be executed daily to retrieve the backup
 import os, datetime
 date = datetime.datetime.now().strftime('%Y-%m-%d')
 

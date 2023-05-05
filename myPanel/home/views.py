@@ -2,15 +2,15 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 
 
-# Create your views here.
+#Return html of a mainpage
 def homePage(request):
     return render(request,'main.html')
 
-
+#Error 404 if the  page not exists
 def error_404(request,exception):
     return render(request,'404.html')
 
-
+#Login function that authenticate username and password 
 def loginPage(request):
     if request.user.is_authenticated:
         return redirect('../dashboard')

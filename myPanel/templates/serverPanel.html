@@ -53,8 +53,8 @@
         <div class="server-pie-chart">
             <canvas id="storage-pie-chart"></canvas>
             <ul>
-                <li><span>Used: </span> <span id="usedDiskText"> </span></li>
-                <li><span>Free: </span> <span id="freeDiskText"> </span></li>
+                <li><span>Used: </span> <span id="usedDiskText">  </span></li>
+                <li><span>Free: </span> <span id="freeDiskText">  </span></li>
             </ul>
         </div>
     </div>
@@ -65,131 +65,144 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
 <script>
     const ipJS = document.getElementById("ipText").innerHTML;
-const cpuUsageCtx = document.getElementById('cpu-usage-graph').getContext('2d');
-const cpuUsageChart = new Chart(cpuUsageCtx, {
-    type: 'line',
-    data: {
-        labels: ['0', '0', '0', '0', '0', '0'],
-        datasets: [{
-            label: 'CPU Usage',
-            data: [],
-            borderColor: '#2862d9',
-            backgroundColor: 'rgba(40, 98, 217, 0.2)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                suggestedMax: 100,
-                ticks: {
-                    callback: function(value, index, values) {
-                        return value + '%';
+
+    //Gets the canvas of the html to draw a chart
+    const cpuUsageCtx = document.getElementById('cpu-usage-graph').getContext('2d');
+    //Sets options for the chart
+    const cpuUsageChart = new Chart(cpuUsageCtx, {
+        type: 'line',
+        data: {
+            //Labels on the x axis (last 6 minutes)
+            labels: [],
+            //Data that will be received from the client and displayed on the chart
+            datasets: [{
+                label: 'CPU Usage',
+                data: [],
+                borderColor: '#2862d9',
+                backgroundColor: 'rgba(40, 98, 217, 0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            //Sets the values on the y axis (from 0% to 100%)
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 100,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value + '%';
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
 
-const memoryUsageCtx = document.getElementById('memory-usage-graph').getContext('2d');
-const memoryUsageChart = new Chart(memoryUsageCtx, {
-    type: 'line',
-    data: {
-        labels: ['0', '0', '0', '0', '0', '0'],
-        datasets: [{
-            label: 'Memory Usage',
-            data: [],
-            borderColor: '#2862d9',
-            backgroundColor: 'rgba(40, 98, 217, 0.2)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                suggestedMax: 100,
-                ticks: {
-                    callback: function(value, index, values) {
-                        return value + '%';
+    //Same type of chart as the described above
+    const memoryUsageCtx = document.getElementById('memory-usage-graph').getContext('2d');
+    const memoryUsageChart = new Chart(memoryUsageCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Memory Usage',
+                data: [],
+                borderColor: '#2862d9',
+                backgroundColor: 'rgba(40, 98, 217, 0.2)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 100,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value + '%';
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
 
-const storagePieCtx = document.getElementById('storage-pie-chart').getContext('2d');
-const storagePieChart = new Chart(storagePieCtx, {
-    type: 'pie',
-    data: {
-        labels: ['Used', 'Free'],
-        datasets: [{
-            label: 'Storage',
-            data: [],
-            backgroundColor: [
-                '#2862d9',
-                '#c2d6eb'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: false,
-        aspectRatio: 1,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        return context.label + ': ' + context.formattedValue + 'GB';
+    const storagePieCtx = document.getElementById('storage-pie-chart').getContext('2d');
+    //Draws a Pie Chart on the canvas
+    const storagePieChart = new Chart(storagePieCtx, {
+        type: 'pie',
+        data: {
+            //Sets the labels 
+            labels: ['Used', 'Free'],
+            datasets: [{
+                label: 'Storage',
+                data: [],
+                backgroundColor: [
+                    '#2862d9',
+                    '#c2d6eb'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            aspectRatio: 1,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.formattedValue + ' GB';
+                        }
                     }
                 }
             }
         }
+    });
+
+    //Gets the data from the corresponding json file
+    async function fetchData() {
+        const response = await fetch("{% static 'json/json-' %}" + ipJS + ".json");
+        const data = await response.json();
+        return data;
     }
-});
+    //Checks if the .json file changed every second 
+    setInterval(async function() {
+        const file = await fetchData();
 
- 
-async function fetchData() {
-    
-    const response = await fetch("{% static 'json/json-' %}" + ipJS + ".json");
-    const data = await response.json();
-    return data;
-}
-setInterval(async function() {
+        //Updates the cpu usage chart with the data in the .json
+        cpuUsageChart.data.datasets[0].data = file.cpuUsage.data;
+        document.getElementById("cpuUsageText").innerHTML = file.cpuUsage.data[file.memoryUsage.data.length - 1] + "%";
+        cpuUsageChart.update();
 
-    const file = await fetchData();
-    cpuUsageChart.data.datasets[0].data = file.cpuUsage.data;
-    document.getElementById("cpuUsageText").innerHTML = file.cpuUsage.data[file.memoryUsage.data.length - 1] + "%";
-    cpuUsageChart.update();
+        //Updates the memory usage chart with the data in the .json
+        memoryUsageChart.data.datasets[0].data = file.memoryUsage.data;
+        document.getElementById("memoryUsageText").innerHTML = file.memoryUsage.data[file.memoryUsage.data.length - 1] + "%";
+        memoryUsageChart.update();
 
-    memoryUsageChart.data.datasets[0].data = file.memoryUsage.data;
-    document.getElementById("memoryUsageText").innerHTML = file.memoryUsage.data[file.memoryUsage.data.length - 1] + "%";
-    memoryUsageChart.update();
+        //Updates the storage chart with the data in the .json
+        storagePieChart.data.datasets[0].data[0] = file.storage.diskTotal - file.storage.diskUsed;
+        storagePieChart.data.datasets[0].data[1] = file.storage.diskUsed;
+        document.getElementById("usedDiskText").innerHTML = Math.round((file.storage.diskTotal - file.storage.diskUsed) * 10) / 10 + "GB";
+        document.getElementById("freeDiskText").innerHTML = file.storage.diskUsed + "GB";
+        storagePieChart.update();
 
-    storagePieChart.data.datasets[0].data[0] = file.storage.diskTotal - file.storage.diskUsed;
-    storagePieChart.data.datasets[0].data[1] = file.storage.diskUsed;
-    document.getElementById("freeDiskText").innerHTML = Math.round((file.storage.diskTotal - file.storage.diskUsed) * 10) / 10 + "GB";
-    document.getElementById("usedDiskText").innerHTML = file.storage.diskUsed + "GB";
-    storagePieChart.update();
+        //Updates the time labels of the charts 
+        const currentTime = new Date();
+        const labels = [];
+        for (let i = 5; i >= 0; i--) {
+            const time = new Date(currentTime.getTime() - i * 60 * 1000);
+            const label = `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`;
+            labels.push(label);
+        }
+        memoryUsageChart.data.labels = labels;
+        cpuUsageChart.data.labels = labels;
+        memoryUsageChart.update();
 
-    const currentTime = new Date();
-    const labels = [];
-    for (let i = 5; i >= 0; i--) {
-        const time = new Date(currentTime.getTime() - i * 60 * 1000);
-        const label = `${time.getHours()}:${time.getMinutes().toString().padStart(2, '0')}`;
-        labels.push(label);
-    }
-    memoryUsageChart.data.labels = labels;
-    cpuUsageChart.data.labels = labels;
-    memoryUsageChart.update();
-
-}, 1000);
+    }, 1000);
 
 
 </script>

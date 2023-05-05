@@ -1,1 +1,1 @@
-{"cpuUsage": {"data": [6.5, 5.9, 6.8, 5.4, 12.1, 13.4]}, "memoryUsage": {"data": [35.0, 35.0, 35.0, 35.0, 35.0, 35.0], "total": 0}, "storage": {"diskTotal": 502.4, "diskUsed": 100.8}}
+{"cpuUsage": {"data": [0, 0, 0, 0, 0, 0]}, "memoryUsage": {"data": [0, 0, 0, 0, 0, 0], "total": 0}, "storage": {"diskTotal": 500, "diskUsed": 100}}

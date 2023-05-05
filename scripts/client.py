@@ -1,8 +1,8 @@
-import socket
-import psutil
-import time
-import pickle
+import socket, psutil, time, pickle
 
+#Script that will be sent to the client
+
+#Returns some stats of the client
 def getStats():    
     cpuUsage = psutil.cpu_percent(5)
     ramUsage = round(psutil.virtual_memory().percent)
@@ -16,6 +16,7 @@ def getStats():
         "uptime":uptime}
     return pickle.dumps(data)
 
+#Sends the stats to the server
 def sendStats(host,port,stats):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
         client.connect((host,port))

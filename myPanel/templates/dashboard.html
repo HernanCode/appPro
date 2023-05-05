@@ -4,9 +4,10 @@
 {% block title %} Backup Center {% endblock title %}
 
 {% block content %} 
-
+<!-- Extends the html with the same template (Header/footer) -->
     <div class="container mx-auto px-4 ">
         <h1 class="text-4xl font-bold text-center my-8 ">Bienvenido de nuevo, {{firstname}}! 👋</h1>
+        <!-- Shows an Error if the backend returns -->
         {% if showError %}
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative " role="alert ">
             <strong class="font-bold ">Error</strong>
@@ -17,6 +18,7 @@
             <div class="w-full lg:w-1/3 px-4 mb-8 ">
                 <div class="bg-white shadow-lg rounded-lg p-6 ">
                     <h2 class="text-2xl font-semibold text-gray-800 text-center ">Añadir servidor</h2>
+                   <!--  Form to add new server -->
                     <form class="mt-4 " method="post">
                         {% csrf_token %}
                         <div class="mb-4 ">
@@ -65,6 +67,7 @@
                         </tr>
                       </thead>
                       <tbody id="servers">
+                       <!--  Show all servers on database -->
                         {% if servers %}
                         {% for server in servers%}
                         <tr class="border-b border-gray-300 text-gray-800 text-sm">
@@ -79,6 +82,7 @@
                           <td class="py-2 px-3"><form action="{% url 'deleteServer' server.id %}" method="get">{% csrf_token %}<button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Borrar</button></form></td>
                         </tr>
                         {% endfor %}
+                      <!--   Otherwise, if the servers do not exist, they return a message. -->
                         {% else %}
                         <tr class="border-b border-gray-300 text-gray-800 text-sm">
                           <td class="py-2 px-3">No hay ningun servidor, crea uno primero</td>
